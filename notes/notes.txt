@@ -1,0 +1,83 @@
+Icontect application using Express  MongoDb  - devloped by - Abhishek bhalala
+----------------------------------------------------------------------------------------
+
+DATABASE : IContacts 
+Tables: contacts , grups 
+Editor : VSCode
+ --> API Testing
+ -------------------------------------------------------------------------------------------
+
+ --> Test the server (using Thunderclinet / postman / insomnia)
+
+ ------------------------------------------------------------------------------------------------
+
+ GET --> to get data from server  --> READ
+ POST --> to create data at server  --> create
+ PUT --> to update data at server --> UPDATE
+ DELETE --> to delete data at server --> DELETE
+
+ -------------------------------------------------
+                --- 1 ----
+-------------------------------------------------
+
+ @usage : to get all contacts 
+ @method : GET 
+ @params : not - params
+ @url : http://127.0.0.1:9999/contacts
+
+
+ -------------------------------------------------
+                --- 2 ----
+-------------------------------------------------
+ @usage :  get a contacts 
+ @method : GET 
+ @params :  contactsID
+ @url : http://127.0.0.1:9999/contacts/:contactsID
+
+
+ -------------------------------------------------
+                --- 3 ----
+-------------------------------------------------
+ @usage :  create a contacts 
+ @method : POST 
+ @params :  name ,imgurl  , email , mobile ,company , title ,groupsID 
+ @url : http://127.0.0.1:9999/contacts/
+
+
+-------------------------------------------------
+                ---  4 ----
+-------------------------------------------------
+  @usage :  UPDATE a contacts 
+ @method : PUT 
+ @params :  name ,imgurl  , email , mobile ,company , title ,groupsID 
+ @url : http://127.0.0.1:9999/contacts/:contactsID
+
+-------------------------------------------------
+                ---  5 ---
+-------------------------------------------------
+   @usage :  DELETE a contacts 
+ @method : DELETE 
+ @params :  contactsID
+ @url : http://127.0.0.1:9999/contacts/:contactsID
+
+
+
+-------------------------------------------------
+                --- 6 ----
+------------------------------------------------- 
+
+  @usage :  get all  contacts 
+ @method : GET 
+ @params : no-params
+ @url : http://127.0.0.1:9999/contacts/gruops/
+
+-------------------------------------------------
+                ---   7 ----
+-------------------------------------------------
+ 
+
+   @usage :  get a gruop
+ @method : GET 
+ @params : groupsID
+ @url : http://127.0.0.1:9999/contacts/gruops/
+

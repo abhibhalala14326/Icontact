@@ -81,3 +81,28 @@ Editor : VSCode
  @params : groupsID
  @url : http://127.0.0.1:9999/contacts/gruops/
 
+
+ export interface gruope  {
+  name:string;
+  imgurl:string;
+  mobile:string;
+  email:string;
+  company:Company;
+  title:string;
+  groupsID:GroupsID
+
+ }
+
+export interface GroupsID  {
+    _id:string;
+    name:string;
+    createAt?:Date;
+    updateAt?:Date;
+
+    
+  }
+ export Company interface{
+  name: string;
+  
+ }
+

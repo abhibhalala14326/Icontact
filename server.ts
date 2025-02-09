@@ -10,8 +10,9 @@ const dbname: string | undefined = process.env.MONGO_DB_DATABASE;
 const hostname: string = '127.0.0.1';
 
 const app:Application = express()
-
-app.use('/group' , groupRouter)
+app.use(express.json());  
+app.use(express.urlencoded({ extended: false })) // pasing from data in the request body
+app.use('/groups' , groupRouter)
 
 if (port) {
     app.listen(port, () => {

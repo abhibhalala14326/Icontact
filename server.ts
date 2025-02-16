@@ -32,7 +32,7 @@ import userRouter from './router/userRouter'
 import contectRouter from './router/contactRouter'
 
 app.use('/groups', groupRouter)
-app.use('/user', userRouter)
+app.use('/userss', userRouter)
 app.use("/contect", contectRouter)
 
 

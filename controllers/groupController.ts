@@ -35,27 +35,58 @@ export const getAllGroup = async (req: Request, res: Response) => {
 
 export const createGroup = async (req: Request, res: Response) => {
 
+    try {
+        let { name } = req.body;
+        console.log("create groupt", name);
 
-    let { name } = req.body;
-    console.log("create groupt", name);
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: "Group name is required",
+            });
+        }
 
-    let theGroup: IGroup | null | undefined = await new GroupsTable({
-        name: name,
-    }).save();
+        let theGroup: IGroup | null | undefined = await new GroupsTable({
+            name: name,
+        }).save();
 
-    if (theGroup) {
-        return res.status(200)
-            .json({
-            data: theGroup,
-            msg: 'Group is create'
-            })
+        if (theGroup) {
+            return res.status(200)
+                .json({
+                    data: theGroup,
+                    msg: 'Group created successfully'
+                })
 
+        }
+    } catch (error) {
+        let { name } = req.body;
+        console.log("create groupt", name);
+
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: "Group name is required",
+            });
+        }
+
+        let theGroup: IGroup | null | undefined = await new GroupsTable({
+            name: name,
+        }).save();
+
+        if (theGroup) {
+            return res.status(200)
+                .json({
+                    data: theGroup,
+                    msg: 'Group created successfully'
+                })
+
+        }
     }
+   
 }
 
 
 
-// group id
 
 /**
  * @usage  : get  a group
@@ -66,21 +97,30 @@ export const createGroup = async (req: Request, res: Response) => {
 
 
 export const getGroup = async (req: Request, res: Response) => {
-    let { groupId } = req.params;
-    const mongoGroupId = new mongoose.Types.ObjectId(groupId);
+    try {
+        let { groupId } = req.params;
+        const mongoGroupId = new mongoose.Types.ObjectId(groupId);
 
-    let theGroup: IGroup | undefined | null = await GroupsTable.findById(
-        mongoGroupId
-    )
+        let theGroup: IGroup | undefined | null = await GroupsTable.findById(
+            mongoGroupId
+        )
 
-    if (!theGroup) {
-        return res.status(400).json({
-            data: null,
-            error: 'not Group id Found'
-        })
+        if (!theGroup) {
+            return res.status(400).json({
+                data: null,
+                error: 'not Group id Found'
+            })
+        }
+
+        return res.status(200).json(theGroup);
+
+    } catch (error) {
+        console.error("Error retrieving group:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-
-    return res.status(200).json(theGroup);
-}
+   }
 
 

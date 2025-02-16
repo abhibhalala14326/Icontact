@@ -12,15 +12,27 @@ import { ContectTable } from "../DataBase/ContactSchema";
 
 
 export const getAllContact = async (req: Request, res: Response) => {
-    let group: IContact[] | null | undefined = await ContectTable.find()
 
-    if (group) {
-        return res.json({
-            data: group,
-            msg: "get a all contect"
-        })
-  
+    try {
+        let group: IContact[] | null | undefined = await ContectTable.find()
+
+        if (group) {
+            return res.json({
+                success: true,
+                data: group,
+                message: "Fetch all contacts successfully"
+            })
+
+        }
+    } catch (error) {
+        console.error("Error fetching contacts:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
+
+
 }
 
 /**
@@ -31,15 +43,25 @@ export const getAllContact = async (req: Request, res: Response) => {
  */
 
 export const getContact = async (req: Request, res: Response) => {
-    let {id} = req.params
-    let group: IContact[] | null | undefined = await ContectTable.findById(id)
+    try {
+        let { id } = req.params
+        let group: IContact[] | null | undefined = await ContectTable.findById(id)
 
-    if (group) {
-        return res.json({
-            data: group,
-            msg: "get a  contect"
-        })
+        if (group) {
+            return res.json({
+                success: true,
+                data: group,
+                msg: "Fetch a contacts successfully"
+            })
+        }
+    } catch (error) {
+        console.error("Error fetching contacts:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
+
 }
 
 
@@ -53,21 +75,23 @@ export const getContact = async (req: Request, res: Response) => {
 export const createContact = async (req: Request, res: Response) => {
     let { user, name, imageUrl, mobile, company, email, title, groupId } = req.body;
 
-    const thecontact: IContact | null | undefined = await new ContectTable({
-        user:user,
+    const newContact: IContact | null | undefined = await new ContectTable({
+        user: user,
         name: name,
         imageUrl: imageUrl,
         mobile: mobile,
         company: company,
         email: email,
         title: title,
-        groupId:groupId
+        groupId: groupId
     }).save()
 
-    if (thecontact) {
+    const savedContact = newContact
+
+    if (savedContact) {
         return res.json({
-            data:thecontact,
-            msg:"update a data "
+            data: newContact,
+            msg: "Contact created successfully "
         })
     }
 
@@ -82,22 +106,43 @@ export const createContact = async (req: Request, res: Response) => {
  */
 
 
-export const updateContact = async(req:Request , res:Response)=>
-{
-    let {id} = req.params;
-    let { user, name, imageUrl, mobile, company, email, title, groupId } = req.body;
+export const updateContact = async (req: Request, res: Response) => {
 
-    const thecontact:IContact | null | undefined = await  ContectTable.findByIdAndUpdate(
-        id,
-        { user, name, imageUrl, mobile, company, email, title, groupId },
-       {new:true}
-    )
-    if (thecontact) {
-        return res.json({
-            data:thecontact,
-            msg:"update a data"
-        })
+    try {
+        let { id } = req.params;
+        let { user, name, imageUrl, mobile, company, email, title, groupId } = req.body;
+        const theContacID = await ContectTable.findById(id);
+
+        if (!theContacID) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Contact not found",
+            })
+        }
+
+        const theContactUpadate: IContact | null | undefined = await ContectTable.findByIdAndUpdate(
+            id,
+            { user, name, imageUrl, mobile, company, email, title, groupId },
+            { new: true }
+        )
+
+        return res.status(200).json({
+            success: true,
+            data: theContactUpadate,
+            message: "Contact updated successfully",
+        });
+
+    } catch (error) {
+        console.error("Error updating contact:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
+
+
+
 }
 
 
@@ -109,18 +154,18 @@ export const updateContact = async(req:Request , res:Response)=>
  */
 
 export const deleteContact = async (req: Request, res: Response) => {
-    let { id } = req.params;
+    try {
+        let { id } = req.params;
+        const thecontact: IContact | null | undefined = await ContectTable.findByIdAndDelete(id)
 
+        if (!thecontact) {
+            return res.status(404).json({
+                success: false,
+                message: "Contact not found",
+            });
+        }
+    } catch (error) {
 
-
-    const thecontact: IContact | null | undefined = await ContectTable.findByIdAndDelete(
-        id
-    )
-
-    if (thecontact) {
-        return res.json({
-            data: thecontact,
-            msg: "update a data"
-        })
     }
+
 }

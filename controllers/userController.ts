@@ -21,9 +21,11 @@ export const getAllUsers = async (req: Request, res: Response) => {
         }
 
     } catch (error) {
-        return res.json({
-            data: error
-        })
+        console.error("Error retrieving group:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 
 
@@ -40,21 +42,24 @@ export const getAllUsers = async (req: Request, res: Response) => {
 export const getUsers = async (req: Request, res: Response) => {
 
     try {
-        let {id} = req.params
-        let user: IUser[] | null  | undefined= await User.findById(id);
+        let { id } = req.params
+        let user: IUser[] | null | undefined = await User.findById(id);
 
         if (user) {
             return res.json(user)
         }
 
     } catch (error) {
-        return res.json({
-            data: error
-        })
+        console.error("Error retrieving group:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-
-
 }
+
+
+
 
 
 /**
@@ -65,7 +70,7 @@ export const getUsers = async (req: Request, res: Response) => {
  */
 
 export const createUsers = async (req: Request, res: Response) => {
- try {
+    try {
 
         let { username, email, password, imageUrl, isAdmin } = req.body;
 
@@ -87,10 +92,11 @@ export const createUsers = async (req: Request, res: Response) => {
         }
 
     } catch (error) {
-        return res.json({
-
-            msg: "create data error"
-        })
+        console.error("Error retrieving group:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 
 }
@@ -118,13 +124,15 @@ export const UserUpdate = async (req: Request, res: Response) => {
         if (updateUser) {
             return res.json({
                 data: updateUser,
-                msg: "update a data"
+                msg: "user updated successfully"
             })
         }
     } catch (error) {
-        return res.json({
-            msg: error
-        })
+        console.error("Error retrieving group:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 
 }
@@ -138,9 +146,29 @@ export const UserUpdate = async (req: Request, res: Response) => {
 
 
 export const UserDelete = async (req: Request, res: Response) => {
-    let { id } = req.params;
+    try {
+        let { id } = req.params;
 
-    const userDelele: IUser | null | undefined = await User.findByIdAndDelete(id)
+        const userDelete: IUser | null | undefined = await User.findByIdAndDelete(id)
 
-    res.json(userDelele)
+        if (!userDelete) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: userDelete,
+            message: "User deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error retrieving group:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+
 }

@@ -6,9 +6,9 @@ import * as UserController from '../controllers/userController'
 const userRouter: Router = Router()
 
 /**
-@usage :  get all user
+@usage :  Get all user
 @method : GET
-@params : not - params
+@params : Not - Params
 @url : http://127.0.0.1:9977/user
  **/
 
@@ -18,7 +18,7 @@ userRouter.get('/', async (req: Request, res: Response) => {
 
 
 /**
-@usage :  get a user
+@usage :  Get a User
 @method : GET
 @params : UserID
 @url : http://127.0.0.1:9977/user/userId

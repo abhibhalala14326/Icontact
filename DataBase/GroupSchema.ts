@@ -9,5 +9,5 @@ const GroupSchema = new mongoose.Schema<IGroup>(
         timestamps:true
     }
 )
-const GroupsTable = mongoose.model<IGroup>('groups ' , GroupSchema);
+const GroupsTable = mongoose.model<IGroup>('groups' , GroupSchema);
 export default GroupsTable;

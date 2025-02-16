@@ -3,6 +3,7 @@ import * as groupContoller from '../controllers/groupController'
 import { body } from 'express-validator'
 import { log } from 'console'
 
+// Create a router
 const groupRouter: Router = Router()
 
 // @usage : to get all contacts
@@ -16,11 +17,24 @@ groupRouter.get('/', async (req: Request, res: Response) => {
 
 
 groupRouter.post('/',
-    [body('name').not().isEmpty().withMessage("name is Required")],
+    [body('name').not().isEmpty().withMessage("name is Required")],//
     async (req: Request, res: Response) => {
   console.log("post");
   
         await groupContoller.createGroup(req, res)
     })
+
+
+    /**
+     usage  :to get  a group
+     methods: GET
+     params: groupID
+     */
+
+groupRouter.get('/:groupId', async (req: Request, res: Response) => {
+    await groupContoller.getGroup(req, res)
+})
+
+
 
 export default groupRouter;

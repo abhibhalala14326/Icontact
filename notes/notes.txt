@@ -2,7 +2,7 @@ Icontect application using Express  MongoDb  - devloped by - Abhishek bhalala
 ----------------------------------------------------------------------------------------
 
 DATABASE : IContacts 
-Tables: contacts , grups 
+Tables: contacts , groups 
 Editor : VSCode
  --> API Testing
  -------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ Editor : VSCode
                 --- 1 ----
 -------------------------------------------------
 
- @usage : to get all contacts 
+ @usage :  get all contacts 
  @method : GET 
  @params : not - params
  @url : http://127.0.0.1:9999/contacts
@@ -79,7 +79,7 @@ Editor : VSCode
    @usage :  get a gruop
  @method : GET 
  @params : groupsID
- @url : http://127.0.0.1:9999/contacts/gruops/
+ @url : http://127.0.0.1:9999/groups/:groupsId
 
 
  export interface gruope  {

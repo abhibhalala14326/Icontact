@@ -1,6 +1,10 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function UserForm() {
+  const navigate = useNavigate();
+  // inserData State
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -9,88 +13,80 @@ function UserForm() {
     isAdmin: false,
   });
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Handle submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    fetch("http://127.0.0.1:9977/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    // You can send `formData` to an API here
+    // register Api Call
+    const response = await axios.post(
+      "http://127.0.0.1:9977/user/register",
+      formData
+    );
+    console.log("User registered :", response.data);
+    //  Navigate to Login Page
+    navigate("/login");
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-xl font-bold mb-4">User Form</h2>
+      <h2 className="text-xl font-bold mb-4">Registration </h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        {/* UserName */}
         <input
           type="text"
           name="username"
           placeholder="Username"
           value={formData.username}
           onChange={(e) => {
-            let name = e.target.value;
-
-            setFormData((prev) => ({ ...prev, username: name }));
+            setFormData((prev) => ({ ...prev, username: e.target.value }));
           }}
           className="p-2 border rounded"
           required
         />
-
+        {/* Emial */}
         <input
           type="email"
           name="email"
           placeholder="Email"
           value={formData.email}
           onChange={(e) => {
-            let email = e.target.value;
-
-            setFormData((prev) => ({ ...prev, email: email }));
+            setFormData((prev) => ({ ...prev, email: e.target.value }));
           }}
           className="p-2 border rounded"
           required
         />
 
+        {/* Password */}
         <input
           type="password"
           name="password"
           placeholder="Password"
           value={formData.password}
           onChange={(e) => {
-            let password = e.target.value;
-
-            setFormData((prev) => ({ ...prev, password: password }));
+            setFormData((prev) => ({ ...prev, password: e.target.value }));
           }}
           className="p-2 border rounded"
           required
         />
-
+        {/* ImgUrl */}
         <input
           type="text"
           name="imageUrl"
           placeholder="Image URL"
           value={formData.imageUrl}
           onChange={(e) => {
-            let img = e.target.value;
-
-            setFormData((prev) => ({ ...prev, imageUrl: img }));
+            setFormData((prev) => ({ ...prev, imageUrl: e.target.value }));
           }}
           className="p-2 border rounded"
         />
 
+        {/* admin */}
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
             name="isAdmin"
             checked={formData.isAdmin}
             onChange={(e) => {
-              let Admin = e.target.value;
-
-              setFormData((prev) => ({ ...prev, isAdmin: Admin }));
+              setFormData((prev) => ({ ...prev, isAdmin: e.target.checked }));
             }}
           />
           Admin

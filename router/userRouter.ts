@@ -12,7 +12,9 @@ const userRouter: Router = Router()
 @url : http://127.0.0.1:9977/user
  **/
 
-userRouter.get('/', async (req: Request, res: Response) => {
+
+
+userRouter.get('/register', async (req: Request, res: Response) => {
     await UserController.getAllUsers(req, res)
 })
 
@@ -24,7 +26,7 @@ userRouter.get('/', async (req: Request, res: Response) => {
 @url : http://127.0.0.1:9977/user/userId
  */
 
-userRouter.get('/:id', async (req: Request, res: Response) => {
+userRouter.get('/register/:id', async (req: Request, res: Response) => {
     await UserController.getUsers(req, res)
 })
 
@@ -41,6 +43,21 @@ userRouter.post('/', async (req: Request, res: Response) => {
     await UserController.createUsers(req, res)
 })
 
+userRouter.post('/register', [
+    body('username').notEmpty().withMessage("UserName is required "),
+    body("email").isEmail().withMessage('Not a valid e-mail address').trim(),
+    body("password").isStrongPassword().withMessage('Strong Password is Required')
+],async (req: Request, res: Response) => {
+    await UserController.userRegister(req, res)
+})
+
+
+userRouter.post('/login', [
+    body("email").isEmail().withMessage('Not a valid e-mail address').trim(),
+    body("password").isStrongPassword().withMessage('Strong Password is Required')
+], async (req: Request, res: Response) => {
+    await UserController.userLogin(req, res)
+})
 
 /**
 @usage :  Update a user
@@ -49,7 +66,7 @@ userRouter.post('/', async (req: Request, res: Response) => {
 @url : http://127.0.0.1:9977/user/userID
  */
 
-userRouter.put('/:id', async (req: Request, res: Response) => {
+userRouter.put('/register/:id', async (req: Request, res: Response) => {
     await UserController.UserUpdate(req, res)
 })
 
@@ -61,7 +78,7 @@ userRouter.put('/:id', async (req: Request, res: Response) => {
 @url : http://127.0.0.1:9977/user/UserId
  */
 
-userRouter.delete('/:id', async (req: Request, res: Response) => {
+userRouter.delete('/register/:id', async (req: Request, res: Response) => {
     await UserController.UserDelete(req, res)
 })
 

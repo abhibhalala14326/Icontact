@@ -37,7 +37,6 @@ export const createGroup = async (req: Request, res: Response) => {
 
     try {
         let { name } = req.body;
-        console.log("create groupt", name);
 
         if (!name) {
             return res.status(400).json({
@@ -59,30 +58,10 @@ export const createGroup = async (req: Request, res: Response) => {
 
         }
     } catch (error) {
-        let { name } = req.body;
-        console.log("create groupt", name);
+        return res.json({ 'msg': 'Data is Not Found' });
 
-        if (!name) {
-            return res.status(400).json({
-                success: false,
-                message: "Group name is required",
-            });
-        }
-
-        let theGroup: IGroup | null | undefined = await new GroupsTable({
-            name: name,
-        }).save();
-
-        if (theGroup) {
-            return res.status(200)
-                .json({
-                    data: theGroup,
-                    msg: 'Group created successfully'
-                })
-
-        }
     }
-   
+
 }
 
 
@@ -121,6 +100,36 @@ export const getGroup = async (req: Request, res: Response) => {
             message: "Internal Server Error",
         });
     }
-   }
+}
+
+
+
+export const UpdateGroup = async(req:Request , res:Response)=>
+{
+    let {id} = req.params;
+    let {name} = req.body;
+
+    const UpdateDataGroup:IGroup | null | undefined  = await GroupsTable.findByIdAndUpdate(id,{name} ,{new:true})
+
+    if (UpdateDataGroup) {
+        return res.status(201).json({
+            data:UpdateDataGroup,
+            msg:"Group i Update"
+        })
+        
+    }
+}
+
+export const groupDelete = async (req:Request , res:Response)=>
+{
+    let {id} = req.params;
+
+    const TheDeleteGroup : IGroup  | null | undefined= await GroupsTable.findByIdAndDelete(id,{new:true})
+
+    return res.status(200).json({
+        data:null,
+        msg:"Group is Delete"
+    })
+}
 
 

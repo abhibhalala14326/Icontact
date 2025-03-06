@@ -12,7 +12,7 @@ const dbname: string | undefined = process.env.MONGO_DB_DATABASE;
 const hostname: string = '127.0.0.1';
 
 
-var corsOptions = {
+let corsOptions = {
     origin: 'http://localhost:5173',
     methods: "GET , PUT , DELETE , POST",
     Credentials: true
@@ -23,7 +23,7 @@ var corsOptions = {
 
 const app: Application = express()
 app.use(express.json());
-app.use(express.urlencoded({ extended: false })) // pasing from data in the request body
+app.use(express.urlencoded({ extended: true }))
 app.use(cors(corsOptions))
 
 // routers
@@ -32,7 +32,7 @@ import userRouter from './router/userRouter'
 import contectRouter from './router/contactRouter'
 
 app.use('/groups', groupRouter)
-app.use('/userss', userRouter)
+app.use('/user', userRouter)
 app.use("/contect", contectRouter)
 
 

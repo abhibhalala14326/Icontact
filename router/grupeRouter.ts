@@ -35,6 +35,26 @@ groupRouter.get('/:groupId', async (req: Request, res: Response) => {
     await groupContoller.getGroup(req, res)
 })
 
+/**  usage: delete a Group
+ Methods:delete
+ params:GroupID
+
+*/
 
 
+groupRouter.delete("/:id" , async(req:Request , res:Response)=>
+{
+    await groupContoller.groupDelete(req,res)
+})
+
+/**
+ * usage : Update A Group
+ * Methods:PUT
+ * Params:GroupID
+ */
+
+groupRouter.put("/:id" , async(req:Request , res:Response)=>
+{
+    await groupContoller.UpdateGroup(req,res)
+})
 export default groupRouter;

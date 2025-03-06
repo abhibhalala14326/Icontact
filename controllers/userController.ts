@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import { IUser } from "../model/IUser";
 import { User } from "../DataBase/userSchema";
-
-
+import { validationResult } from "express-validator";
+import bcryptjs from 'bcryptjs'
+import gravatar from 'gravatar'
+import jwt from 'jsonwebtoken'
 
 /**
-@usage :  get all user
+@usage :  Get all user
 @method : GET
 @params : not - params
 @url : http://127.0.0.1:9977/user
@@ -17,10 +19,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
         let user: IUser[] | undefined = await User.find();
 
         if (user) {
-            return res.json(user)
+            return res.json({
+                data: user,
+                success: true
+            })
         }
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error retrieving group:", error);
         return res.status(500).json({
             success: false,
@@ -33,7 +38,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 
 /**
-@usage :  get a user
+@usage :  Get a user
 @method : GET
 @params : UserID
 @url : http://127.0.0.1:9977/user/userId
@@ -46,7 +51,11 @@ export const getUsers = async (req: Request, res: Response) => {
         let user: IUser[] | null | undefined = await User.findById(id);
 
         if (user) {
-            return res.json(user)
+            return res.json({
+                data: user,
+                success: true,
+
+            })
         }
 
     } catch (error) {
@@ -87,7 +96,10 @@ export const createUsers = async (req: Request, res: Response) => {
         if (createUser) {
             return res.json({
                 data: createUser,
-                msg: 'create a user'
+                msg: 'create a user',
+                success: true
+
+
             })
         }
 
@@ -124,7 +136,9 @@ export const UserUpdate = async (req: Request, res: Response) => {
         if (updateUser) {
             return res.json({
                 data: updateUser,
-                msg: "user updated successfully"
+                msg: "user updated successfully",
+                success: true
+
             })
         }
     } catch (error) {
@@ -161,7 +175,7 @@ export const UserDelete = async (req: Request, res: Response) => {
         return res.status(200).json({
             success: true,
             data: userDelete,
-            message: "User deleted successfully",
+            msg: "User deleted successfully",
         });
     } catch (error) {
         console.error("Error retrieving group:", error);
@@ -172,3 +186,127 @@ export const UserDelete = async (req: Request, res: Response) => {
     }
 
 }
+
+
+
+
+export const userRegister = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        let { username, email, password, isAdmin } = req.body;
+
+        // Check if the user already exists
+        const userObj = await User.findOne({ email });
+        if (userObj) {
+            return res.status(409).json({
+                data: null,
+                msg: "The user already exists"
+            });
+        }
+
+        // Password encryption
+        const salt = await bcryptjs.genSalt(10);
+        const hashPassword = await bcryptjs.hash(password, salt);
+
+        // Generate avatar image URL
+        const imageUrl = gravatar.url(email, {
+            size: "200",
+            rating: "pg",
+            default: "mm"
+        });
+
+        // Create new user object
+        const newUser = new User({
+            username,
+            email,
+            password: hashPassword,
+            imageUrl,
+            isAdmin
+        });
+
+        // Save user to database
+        const theUserObj = await newUser.save();
+
+        return res.status(201).json({
+            data: theUserObj,
+            msg: "Registration is successfull"
+        });
+
+    } catch (e) {
+        return res.status(500).json({
+            data: null,
+            error: e || "Internal Server Error"
+        });
+    }
+};
+
+
+
+
+export const userLogin = async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        let { email, password } = req.body;
+
+        // Check if the user already exists
+        const userObj = await User.findOne({ email });
+        if (!userObj) {
+            return res.status(409).json({
+                data: null,
+                msg: "The user already exists"
+            });
+        }
+
+
+        // Password compare
+        const IsMatch: boolean = await bcryptjs.compare(password, userObj.password)
+
+        if (!IsMatch) {
+
+            return res.status(500).json({
+                data: null,
+                error: "Invalid Password"
+            })
+        }
+
+        // create a token 
+
+        const secretKey: string | undefined = process.env.JWR_SECRET_KEY;
+        const payload: any = {
+            user: {
+                id: userObj._id,
+                email: userObj.email
+            }
+        }
+
+        if (secretKey && payload) {
+            jwt.sign(payload, secretKey, {
+                expiresIn: 100000000000
+            }, (error, encoded) => {
+                if (error) throw error
+                if (encoded) {
+                    return res.status(200).json({
+                        data: userObj,
+                        token: encoded,
+                        msg: 'Login is Success!'
+                    })
+                }
+            })
+        }
+        
+
+    } catch (e) {
+        return res.status(500).json({
+            data: null,
+            error: e || "Internal Server Error"
+        });
+    }
+};
